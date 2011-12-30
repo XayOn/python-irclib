@@ -424,6 +424,15 @@ class ServerConnection(Connection):
         self.localaddress = localaddress
         self.localport = localport
         self.localhost = socket.gethostname()
+
+        try:
+            import socks, os
+            socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,
+                os.getenv('proxy_addr'), os.getenv('proxy_port'))
+            socket.socket = socks.socksocket
+        except:
+            pass
+
         if ipv6:
             self.socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
